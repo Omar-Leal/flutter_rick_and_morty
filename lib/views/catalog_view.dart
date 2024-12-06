@@ -4,13 +4,13 @@ import '../providers/product_provider.dart';
 import '../custom_widgets/product_card.dart';
 
 class CatalogView extends ConsumerWidget {
-  @override
+ @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final products = ref.watch(productsProvider);
+    final productsAsyncValue = ref.watch(productsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Find Your Clothes'),
+        title: const Text('Rick and Morty Catalog'),
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart),
@@ -20,17 +20,38 @@ class CatalogView extends ConsumerWidget {
           ),
         ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-        ),
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return ProductCard(product: products[index]);
+      body: productsAsyncValue.when(
+        data: (products) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding:  EdgeInsets.all(16.0),
+                  child: Text(
+                    'Characters',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(
+                  height: 250, 
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: ProductCard(product: products[index]),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
         },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: ${error.toString()}')),
       ),
     );
   }
