@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => CatalogView(),
+        '/': (context) => CatalogViews(),
         '/cart': (context) => CartView(),
       },
     );

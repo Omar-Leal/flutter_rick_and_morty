@@ -16,9 +16,11 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
         name: character['name'],
         imageUrl: character['image'],
         price: (character['id'] * 10).toDouble(), 
+        gender: character['gender'], 
       );
     }).toList();
   } else {
     throw Exception('Error al obtener los personajes');
   }
 });
+
